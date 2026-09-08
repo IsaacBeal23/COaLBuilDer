@@ -1,5 +1,0 @@
-C:\Users\David Beal\Documents\Publishes\COalBOLder.exe
-C:\Users\David Beal\Documents\Publishes\COalBOLder.dll
-C:\Users\David Beal\Documents\Publishes\COalBOLder.deps.json
-C:\Users\David Beal\Documents\Publishes\COalBOLder.runtimeconfig.json
-C:\Users\David Beal\Documents\Publishes\COalBOLder.pdb
