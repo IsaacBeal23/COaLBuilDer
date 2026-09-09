@@ -15,6 +15,10 @@ namespace COalBOLder
             {
                 textEditor1.LoadFile(this.location + "\\" + this.name + ".cbl");
             }
+            else
+            {
+                textEditor1.CreateIdDivision(name);
+            }
         }
 
         string location;
