@@ -43,6 +43,7 @@
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 0;
+            button1.TabStop = false;
             button1.Text = "Save";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
@@ -52,7 +53,8 @@
             button2.Location = new Point(93, 12);
             button2.Name = "button2";
             button2.Size = new Size(75, 23);
-            button2.TabIndex = 1;
+            button2.TabIndex = 0;
+            button2.TabStop = false;
             button2.Text = "Compile";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
@@ -62,7 +64,8 @@
             button3.Location = new Point(174, 12);
             button3.Name = "button3";
             button3.Size = new Size(75, 23);
-            button3.TabIndex = 2;
+            button3.TabIndex = 0;
+            button3.TabStop = false;
             button3.Text = "Run";
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
@@ -72,7 +75,8 @@
             button4.Location = new Point(255, 12);
             button4.Name = "button4";
             button4.Size = new Size(75, 23);
-            button4.TabIndex = 3;
+            button4.TabIndex = 0;
+            button4.TabStop = false;
             button4.Text = "S/C/R";
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click;
@@ -95,7 +99,8 @@
             button5.Location = new Point(688, 12);
             button5.Name = "button5";
             button5.Size = new Size(100, 23);
-            button5.TabIndex = 5;
+            button5.TabIndex = 0;
+            button5.TabStop = false;
             button5.Text = "Set Folder";
             button5.UseVisualStyleBackColor = true;
             button5.Click += button5_Click;
@@ -106,7 +111,8 @@
             button7.Location = new Point(582, 12);
             button7.Name = "button7";
             button7.Size = new Size(100, 23);
-            button7.TabIndex = 7;
+            button7.TabIndex = 0;
+            button7.TabStop = false;
             button7.Text = "Save Project";
             button7.UseVisualStyleBackColor = true;
             button7.Click += button7_Click;

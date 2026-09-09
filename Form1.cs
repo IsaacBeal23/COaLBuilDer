@@ -15,7 +15,11 @@ namespace COalBOLder
             {
                 textBox1.Text = File.ReadAllText(this.location + "\\" + this.name + ".cbl");
             }
+            Controls.Add(textEditor);
+            textBox1.Hide();
         }
+
+        TextEditor textEditor = new TextEditor() { Location = new Point(12,41) ,Size = new Size(776, 397), BackColor = Color.White };
 
         string location;
         string name;
