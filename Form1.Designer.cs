@@ -32,9 +32,9 @@
             button2 = new Button();
             button3 = new Button();
             button4 = new Button();
-            textBox1 = new TextBox();
             button5 = new Button();
             button7 = new Button();
+            textEditor1 = new TextEditor();
             SuspendLayout();
             // 
             // button1
@@ -81,18 +81,6 @@
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click;
             // 
-            // textBox1
-            // 
-            textBox1.AcceptsReturn = true;
-            textBox1.AcceptsTab = true;
-            textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBox1.Location = new Point(12, 41);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.ScrollBars = ScrollBars.Both;
-            textBox1.Size = new Size(776, 397);
-            textBox1.TabIndex = 4;
-            // 
             // button5
             // 
             button5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -117,14 +105,27 @@
             button7.UseVisualStyleBackColor = true;
             button7.Click += button7_Click;
             // 
+            // textEditor1
+            // 
+            textEditor1.AccessFile = "C:\\Users\\David Beal\\Documents\\COBOL\\HelloWorld\\HelloWorld.cbl";
+            textEditor1.BackColor = Color.White;
+            textEditor1.BackgroundImageLayout = ImageLayout.None;
+            textEditor1.CursorX = 0;
+            textEditor1.CursorY = 0;
+            textEditor1.Font = new Font("Consolas", 12F);
+            textEditor1.Location = new Point(12, 41);
+            textEditor1.Name = "textEditor1";
+            textEditor1.Size = new Size(776, 397);
+            textEditor1.TabIndex = 1;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(textEditor1);
             Controls.Add(button7);
             Controls.Add(button5);
-            Controls.Add(textBox1);
             Controls.Add(button4);
             Controls.Add(button3);
             Controls.Add(button2);
@@ -132,7 +133,6 @@
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -141,8 +141,8 @@
         private Button button2;
         private Button button3;
         private Button button4;
-        private TextBox textBox1;
         private Button button5;
         private Button button7;
+        private TextEditor textEditor1;
     }
 }

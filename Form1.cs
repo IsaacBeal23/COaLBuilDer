@@ -13,13 +13,9 @@ namespace COalBOLder
             this.name = name;
             if (r)
             {
-                textBox1.Text = File.ReadAllText(this.location + "\\" + this.name + ".cbl");
+                textEditor1.LoadFile(this.location + "\\" + this.name + ".cbl");
             }
-            Controls.Add(textEditor);
-            textBox1.Hide();
         }
-
-        TextEditor textEditor = new TextEditor() { Location = new Point(12,41) ,Size = new Size(776, 397), BackColor = Color.White };
 
         string location;
         string name;
@@ -31,7 +27,7 @@ namespace COalBOLder
 
         private void Save()
         {
-            File.WriteAllText($"{location}\\{name}.cbl", textBox1.Text);
+            File.WriteAllText($"{location}\\{name}.cbl", textEditor1.Text);
         }
 
         private void Compile()

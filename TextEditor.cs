@@ -29,8 +29,8 @@ namespace COalBOLder
             path.AddString("M", Font.FontFamily, (int)Font.Style, Font.Size, Point.Empty, StringFormat.GenericDefault);
             s = path.GetBounds().Size;
             s.Width *= 1.5f; s.Height *= 2;
-            LoadFile("C:\\Users\\David Beal\\Documents\\COBOL\\HelloWorld\\HelloWorld.cbl");
         }
+        public override string Text { get => string.Concat(lines); set => base.Text = value; }
         public void LoadFile(string value)
         {
             accessFile = value;
