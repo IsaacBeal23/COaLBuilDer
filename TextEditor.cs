@@ -340,7 +340,13 @@ namespace COalBOLder
             }
             else if (char.IsDigit(e.KeyChar))
             {
-                lines[CursorY] = Insert(CursorX++, e.KeyChar, lines[CursorY]);
+                lines[CursorY] = Insert(CursorX, e.KeyChar, lines[CursorY]);
+                CursorX++;
+            }
+            else if (char.IsSymbol(e.KeyChar))
+            {
+                lines[CursorY] = Insert(CursorX, e.KeyChar, lines[CursorY]);
+                CursorX++;
             }
             else if (char.IsControl(e.KeyChar))
             {
