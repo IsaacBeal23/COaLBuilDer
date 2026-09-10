@@ -25,10 +25,11 @@ namespace COalBOLder
             VScroll = true;
             DoubleBuffered = true;
             Font = new Font("Consolas", 12, FontStyle.Regular);
-            using var path = new GraphicsPath();
+            /*using var path = new GraphicsPath();
             path.AddString("M", Font.FontFamily, (int)Font.Style, Font.Size, Point.Empty, StringFormat.GenericDefault);
             s = path.GetBounds().Size;
-            s.Width *= 1.5f; s.Height *= 2;
+            s.Width *= 1.5f; s.Height *= 2;*/
+            s = TextRenderer.MeasureText("M", Font, Size.Empty, TextFormatFlags.NoPadding);
         }
         public override string Text { get => string.Concat(lines); set => base.Text = value; }
         public void LoadFile(string value)

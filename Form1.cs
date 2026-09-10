@@ -20,6 +20,7 @@ namespace COalBOLder
             else
             {
                 textEditor1.CreateIdDivision(name);
+                textEditor1.isCobol = true;
             }
         }
 
