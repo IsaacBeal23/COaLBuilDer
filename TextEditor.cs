@@ -35,7 +35,7 @@ namespace COalBOLder
         public void LoadFile(string value)
         {
             accessFile = value;
-            lines = File.ReadAllLines(value).ToList();
+            lines = File.ReadAllText(value).Split('\r','\n').ToList();
             isCobol = value.EndsWith(".cbl");
             Invalidate();
         }
