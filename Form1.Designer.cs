@@ -113,7 +113,6 @@
             // 
             // textEditor1
             // 
-            textEditor1.AccessFile = "C:\\Users\\David Beal\\Documents\\COBOL\\HelloWorld\\HelloWorld.cbl";
             textEditor1.BackColor = Color.White;
             textEditor1.BackgroundImageLayout = ImageLayout.None;
             textEditor1.CursorX = 0;
@@ -146,11 +145,11 @@
             // 
             fileDisplay1.BackColor = Color.White;
             fileDisplay1.Dock = DockStyle.Fill;
+            fileDisplay1.FileChanged = null;
             fileDisplay1.Location = new Point(0, 0);
             fileDisplay1.Name = "fileDisplay1";
             fileDisplay1.Size = new Size(209, 397);
             fileDisplay1.TabIndex = 0;
-            fileDisplay1.FileChangedEvent += ChangeFile;
             // 
             // Form1
             // 

@@ -11,6 +11,7 @@ namespace COalBOLder
             this.location = location;
             Directory.CreateDirectory(this.location);
             this.name = name;
+            fileDisplay1.FileChangedEvent += ChangeFile;
             fileDisplay1.FileLocation = (this.location);
             if (r)
             {

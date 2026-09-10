@@ -45,8 +45,8 @@ namespace COalBOLder
             lines.Insert(0, "IDENTIFICATION DIVISION.");
         }
         List<string> lines = new List<string>();
-        public int CursorX { get { return cursorX; } 
-            set { if (value > lines[CursorY].Length) { int c = CursorY++; if (c != CursorY) cursorX = 0; } else if (value < 0) { int c = CursorY--; if (c != CursorY) cursorX = lines[CursorY].Length; } else { cursorX = value; } } }
+        public int CursorX { get { return cursorX; }
+            set { if (CursorY < lines.Count) { if (value > lines[CursorY].Length) { int c = CursorY++; if (c != CursorY) cursorX = 0; } else if (value < 0) { int c = CursorY--; if (c != CursorY) cursorX = lines[CursorY].Length; } else { cursorX = value; } } } }
         private int cursorX = 0;
         public int CursorY
         {
