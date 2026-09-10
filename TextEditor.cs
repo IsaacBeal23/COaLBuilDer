@@ -36,6 +36,7 @@ namespace COalBOLder
             accessFile = value;
             lines = File.ReadAllLines(value).ToList();
             isCobol = value.EndsWith(".cbl");
+            Invalidate();
         }
 
         public void CreateIdDivision(string value, bool NotClass = true)
@@ -398,36 +399,48 @@ namespace COalBOLder
             foreach (var line in lines)
             {
                 float x = 0;
-                foreach (var word in SplitSymbols(line))
+                if (isCobol)
                 {
-                    Brush brush = isCobol ? word.ToUpperInvariant() switch {
-                        "IDENTIFICATION" => Brushes.Blue,
-                        "PROGRAM-ID" => Brushes.Blue,
-                        "AUTHOR" => Brushes.Blue,
-                        "ENVIRONMENT" => Brushes.Blue,
-                        "CONFIGURATION" => Brushes.Blue,
-                        "DATA" => Brushes.Blue,
-                        "WORKING-STORAGE" => Brushes.Blue,
-                        "PROCEDURE" => Brushes.Blue,
-                        "DIVISION" => Brushes.DarkGreen,
-                        "SECTION" => Brushes.DarkGreen,
-                        "DISPLAY" => Brushes.DarkOrange,
-                        "ACCEPT" => Brushes.DarkOrange,
-                        "PIC" => Brushes.DarkOrange,
-                        "COMPUTE" => Brushes.DarkOrange,
-                        "ADD" => Brushes.DarkOrange,
-                        "SUBTRACT" => Brushes.DarkOrange,
-                        "MULTIPLY" => Brushes.DarkOrange,
-                        "DIVIDE" => Brushes.DarkOrange,
-                        "BY" => Brushes.DarkOrange,
-                        "TO" => Brushes.DarkOrange,
-                        "FROM" => Brushes.DarkOrange,
-                        "STOP" => Brushes.DarkOrange,
-                        "RUN" => Brushes.DarkOrange,
-                        _ => (float.TryParse(word,out float f))? Brushes.Red : word.StartsWith('"') ? Brushes.Green : Brushes.Black
-                    } : Brushes.Black;
-                    e.Graphics.DrawString(word, Font, brush, x - HorizontalScroll.Value, y - VerticalScroll.Value);
-                    x += s.Width * word.Length;
+                    foreach (var word in SplitSymbols(line))
+                    {
+
+                        Brush brush = word.ToUpperInvariant() switch
+                        {
+                            "IDENTIFICATION" => Brushes.Blue,
+                            "PROGRAM-ID" => Brushes.Blue,
+                            "AUTHOR" => Brushes.Blue,
+                            "ENVIRONMENT" => Brushes.Blue,
+                            "CONFIGURATION" => Brushes.Blue,
+                            "DATA" => Brushes.Blue,
+                            "WORKING-STORAGE" => Brushes.Blue,
+                            "PROCEDURE" => Brushes.Blue,
+                            "DIVISION" => Brushes.DarkGreen,
+                            "SECTION" => Brushes.DarkGreen,
+                            "DISPLAY" => Brushes.DarkOrange,
+                            "ACCEPT" => Brushes.DarkOrange,
+                            "PIC" => Brushes.DarkOrange,
+                            "COMPUTE" => Brushes.DarkOrange,
+                            "ADD" => Brushes.DarkOrange,
+                            "SUBTRACT" => Brushes.DarkOrange,
+                            "MULTIPLY" => Brushes.DarkOrange,
+                            "DIVIDE" => Brushes.DarkOrange,
+                            "BY" => Brushes.DarkOrange,
+                            "TO" => Brushes.DarkOrange,
+                            "FROM" => Brushes.DarkOrange,
+                            "STOP" => Brushes.DarkOrange,
+                            "RUN" => Brushes.DarkOrange,
+                            _ => (float.TryParse(word, out float f)) ? Brushes.Red : word.StartsWith('"') ? Brushes.Green : Brushes.Black
+                        };
+                        e.Graphics.DrawString(word, Font, brush, x - HorizontalScroll.Value, y - VerticalScroll.Value);
+                        x += s.Width * word.Length;
+                    }
+                }
+                else
+                {
+                    if (line.Length > 1000)
+                        e.Graphics.DrawString(line.Substring(0,1000), Font, Brushes.Black, -HorizontalScroll.Value, y - VerticalScroll.Value);
+                    else
+                        e.Graphics.DrawString(line, Font, Brushes.Black, - HorizontalScroll.Value, y - VerticalScroll.Value);
                 }
                 y += s.Height;
             }

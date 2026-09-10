@@ -35,6 +35,12 @@
             button5 = new Button();
             button7 = new Button();
             textEditor1 = new TextEditor();
+            splitContainer1 = new SplitContainer();
+            fileDisplay1 = new FileDisplay();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
             SuspendLayout();
             // 
             // button1
@@ -112,18 +118,46 @@
             textEditor1.BackgroundImageLayout = ImageLayout.None;
             textEditor1.CursorX = 0;
             textEditor1.CursorY = 0;
+            textEditor1.Dock = DockStyle.Fill;
             textEditor1.Font = new Font("Consolas", 12F);
-            textEditor1.Location = new Point(12, 41);
+            textEditor1.Location = new Point(0, 0);
             textEditor1.Name = "textEditor1";
-            textEditor1.Size = new Size(776, 397);
+            textEditor1.Size = new Size(563, 397);
             textEditor1.TabIndex = 1;
+            // 
+            // splitContainer1
+            // 
+            splitContainer1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            splitContainer1.Location = new Point(12, 41);
+            splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.Controls.Add(textEditor1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            splitContainer1.Panel2.Controls.Add(fileDisplay1);
+            splitContainer1.Size = new Size(776, 397);
+            splitContainer1.SplitterDistance = 563;
+            splitContainer1.TabIndex = 2;
+            // 
+            // fileDisplay1
+            // 
+            fileDisplay1.BackColor = Color.White;
+            fileDisplay1.Dock = DockStyle.Fill;
+            fileDisplay1.Location = new Point(0, 0);
+            fileDisplay1.Name = "fileDisplay1";
+            fileDisplay1.Size = new Size(209, 397);
+            fileDisplay1.TabIndex = 0;
+            fileDisplay1.FileChangedEvent += ChangeFile;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(textEditor1);
+            Controls.Add(splitContainer1);
             Controls.Add(button7);
             Controls.Add(button5);
             Controls.Add(button4);
@@ -132,6 +166,10 @@
             Controls.Add(button1);
             Name = "Form1";
             Text = "Form1";
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -144,5 +182,7 @@
         private Button button5;
         private Button button7;
         private TextEditor textEditor1;
+        private SplitContainer splitContainer1;
+        private FileDisplay fileDisplay1;
     }
 }

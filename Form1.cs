@@ -11,13 +11,23 @@ namespace COalBOLder
             this.location = location;
             Directory.CreateDirectory(this.location);
             this.name = name;
+            fileDisplay1.FileLocation = (this.location);
             if (r)
             {
-                textEditor1.LoadFile(this.location + "\\" + this.name + ".cbl");
+                fileDisplay1.FileChanged = this.location + "\\" + this.name + ".cbl";
+                //textEditor1.LoadFile();
             }
             else
             {
                 textEditor1.CreateIdDivision(name);
+            }
+        }
+
+        public void ChangeFile(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(fileDisplay1.FileChanged))
+            {
+                textEditor1.LoadFile(fileDisplay1.FileChanged);
             }
         }
 
@@ -31,7 +41,14 @@ namespace COalBOLder
 
         private void Save()
         {
-            File.WriteAllText($"{location}\\{name}.cbl", textEditor1.Text);
+            if (fileDisplay1.FileChanged != null)
+            {
+                File.WriteAllText(fileDisplay1.FileChanged, textEditor1.Text);
+            }
+            else
+            {
+                File.WriteAllText($"{location}\\{name}.cbl", textEditor1.Text);
+            }
         }
 
         private void Compile()
