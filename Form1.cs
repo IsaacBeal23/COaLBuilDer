@@ -15,6 +15,7 @@ namespace COalBOLder
             if (r)
             {
                 fileDisplay1.FileChanged = this.location + "\\" + this.name + ".cbl";
+                //textEditor1.LoadFile();
             }
             else
             {
