@@ -49,6 +49,7 @@ namespace COalBOLder
             {
                 File.WriteAllText($"{location}\\{name}.cbl", textEditor1.Text);
             }
+            fileDisplay1.LoadDirectory(location);
         }
 
         private void Compile()
