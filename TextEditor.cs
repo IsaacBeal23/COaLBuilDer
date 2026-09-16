@@ -31,7 +31,7 @@ namespace COalBOLder
             s.Width *= 1.5f; s.Height *= 2;*/
             s = TextRenderer.MeasureText("M", Font, Size.Empty, TextFormatFlags.NoPadding);
         }
-        public override string Text { get => string.Concat(lines); set => base.Text = value; }
+        public override string Text { get => string.Concat(lines.Select(f=>f+'\n')).TrimEnd('\n') + '\n'; set => base.Text = value; }
         public void LoadFile(string value)
         {
             accessFile = value;
@@ -47,12 +47,16 @@ namespace COalBOLder
         }
         List<string> lines = new List<string>();
         public int CursorX { get { return cursorX; }
-            set { if (CursorY < lines.Count) { if (value > lines[CursorY].Length) { int c = CursorY++; if (c != CursorY) cursorX = 0; } else if (value < 0) { int c = CursorY--; if (c != CursorY) cursorX = lines[CursorY].Length; } else { cursorX = value; } } } }
+            set { if (cursorY < lines.Count) { if (value > lines[cursorY].Length) { int c = CursorY++; if (c != cursorY) cursorX = 0; } else if (value < 0) { int c = CursorY--; if (c != cursorY) cursorX = lines[cursorY].Length; } else { cursorX = value; } } } }
         private int cursorX = 0;
         public int CursorY
         {
             get { return cursorY; }
-            set { if (value >= 0 && value < lines.Count) cursorY = value; }
+            set { 
+                if (value >= 0 && value < lines.Count) 
+                    cursorY = value;
+                VerticalScroll.Value = (int)Math.Clamp((cursorY-10) * s.Height, VerticalScroll.Minimum, VerticalScroll.Maximum);
+            }
         }
         int CursorPosX = -1;
         int CursorPosY = -1;
@@ -377,14 +381,67 @@ namespace COalBOLder
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            (CursorX, CursorY) = CalcCursorPos(e.Location);
+            int c;
+            if (breakLines.Keys.Contains(c = CalcCursorLine(e.Location)))
+            {
+                int d = c;
+                foreach (var item in breakLines)
+                {
+                    if (item.Key < c)
+                    {
+                        c--;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                if (c < lines.Count)
+                {
+                    lines.InsertRange(c, breakLines[d] switch
+                    {
+                        "IDENTIFICATION" => new string[] { "\t\tIDENTIFICATION DIVISION.", "\t\t\tPROGRAM-ID. XXXXX." },
+                        "DATA" => new string[] { "\t\tDATA DIVISION." },
+                        "PROCEDURE" => new string[] { "\t\tPROCEDURE DIVISION." },
+                    });
+                }
+                else
+                {
+                    lines.AddRange(breakLines[d] switch
+                    {
+                        "IDENTIFICATION" => new string[] { "\t\tIDENTIFICATION DIVISION.", "\t\t\tPROGRAM-ID. XXXXX." },
+                        "DATA" => new string[] { "\t\tDATA DIVISION." },
+                        "PROCEDURE" => new string[] { "\t\tPROCEDURE DIVISION." },
+                    });
+                }
+            }
+            else
+            {
+                (CursorX, CursorY) = CalcCursorPos(e.Location);
+            }
             (CursorPosX, CursorPosY) = (-1, -1);
             Invalidate();
         }
         private (int, int) CalcCursorPos(Point p)
         {
-            int y = Math.Min((int)((p.Y - VerticalScroll.Value) / s.Height),lines.Count-1);
-            return (Math.Min((int)((p.X - HorizontalScroll.Value) / s.Width), lines[y].Length), y);
+            float y2 = (p.Y - VerticalScroll.Value) / s.Height;
+            foreach (var item in breakLines)
+            {
+                if (item.Key <= y2)
+                {
+                    y2--;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            int y = Math.Clamp((int)(y2),0, lines.Count-1);
+            return (Math.Clamp((int)((p.X - HorizontalScroll.Value - 40) / s.Width), 0, lines[y].Length), y);
+        }
+        private int CalcCursorLine(Point p)
+        {
+            return (int)((p.Y - VerticalScroll.Value) / s.Height);
         }
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -397,88 +454,309 @@ namespace COalBOLder
                 Invalidate();
             }
         }
+        public Dictionary<string, Color> ColourScheme;
+        public Dictionary<int, string> breakLines;
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+            breakLines = new Dictionary<int, string>();
             int scrollx = 0;
             int scrolly = 0;
+            bool IdentificationDivision = false;
+            bool DataDivision = false;
+            bool ProcedureDivision = false;
             float y = 0;
-            foreach (var line in lines)
+            int Y = 0;
+            if (isCobol)
             {
-                float x = 0;
-                if (isCobol)
+                if (ColourScheme != null)
                 {
-                    foreach (var word in SplitSymbols(line))
+                    Brush brush = Brushes.Black;
+                    foreach (var line in lines)
                     {
-
-                        Brush brush = word.ToUpperInvariant() switch
+                        float x = 0;
+                        var split = SplitSymbols(line);
+                        if (split.Any(item => item != null && item.Equals("IDENTIFICATION", StringComparison.OrdinalIgnoreCase)))
                         {
-                            "IDENTIFICATION" => Brushes.Blue,
-                            "PROGRAM-ID" => Brushes.Blue,
-                            "AUTHOR" => Brushes.Blue,
-                            "ENVIRONMENT" => Brushes.Blue,
-                            "CONFIGURATION" => Brushes.Blue,
-                            "DATA" => Brushes.Blue,
-                            "WORKING-STORAGE" => Brushes.Blue,
-                            "PROCEDURE" => Brushes.Blue,
-                            "DIVISION" => Brushes.DarkGreen,
-                            "SECTION" => Brushes.DarkGreen,
-                            "DISPLAY" => Brushes.DarkOrange,
-                            "ACCEPT" => Brushes.DarkOrange,
-                            "PIC" => Brushes.DarkOrange,
-                            "COMPUTE" => Brushes.DarkOrange,
-                            "ADD" => Brushes.DarkOrange,
-                            "SUBTRACT" => Brushes.DarkOrange,
-                            "MULTIPLY" => Brushes.DarkOrange,
-                            "DIVIDE" => Brushes.DarkOrange,
-                            "BY" => Brushes.DarkOrange,
-                            "TO" => Brushes.DarkOrange,
-                            "FROM" => Brushes.DarkOrange,
-                            "STOP" => Brushes.DarkOrange,
-                            "RUN" => Brushes.DarkOrange,
-                            _ => (float.TryParse(word, out float f)) ? Brushes.Red : word.StartsWith('"') ? Brushes.Green : Brushes.Black
-                        };
-                        e.Graphics.DrawString(word, Font, brush, x - HorizontalScroll.Value, y - VerticalScroll.Value);
-                        x += s.Width * word.Length;
+                            IdentificationDivision = true;
+                        }
+                        if (split.Any(item => item != null && item.Equals("DATA", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            DataDivision = true;
+                            if (!IdentificationDivision)
+                            {
+                                IdentificationDivision = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
+                                y += s.Height;
+                            }
+                        }
+                        if (split.Any(item => item != null && item.Equals("PROCEDURE", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            ProcedureDivision = true;
+                            if (!IdentificationDivision)
+                            {
+                                IdentificationDivision = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
+                                y += s.Height;
+                            }
+                            if (!DataDivision)
+                            {
+                                DataDivision = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("DATA DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "DATA");
+                                y += s.Height;
+                            }
+                        }
+                        foreach (var word in split)
+                        {
+                            string w = word.ToUpperInvariant();
+                            if (ColourScheme.ContainsKey(w))
+                                brush = new SolidBrush(ColourScheme[w]);
+                            else
+                                brush = (float.TryParse(word, out float f)) ? Brushes.Red : word.StartsWith('"') ? Brushes.Green : Brushes.Black;
+                            e.Graphics.DrawString(word, Font, brush, 40 + x - HorizontalScroll.Value, y - VerticalScroll.Value);
+                            x += s.Width * word.Length;
+                        }
+                        RectangleF rec = new RectangleF(0, y - VerticalScroll.Value, 40, s.Height);
+                        e.Graphics.FillRectangle(Brushes.White, rec);
+                        e.Graphics.DrawString((Y+1).ToString(), Font, Brushes.Black, rec, new StringFormat() { Alignment = StringAlignment.Far });
+                        if (CursorPosX > -1)
+                        {
+                            if (CursorY < Y)
+                            {
+                                if (CursorPosY < Y) { }
+                                else if (CursorPosY > Y)
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f, y, line.Length * s.Width, s.Height);
+                                else
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f, y, CursorPosX * s.Width, s.Height);
+                            }
+                            else if (CursorY > Y)
+                            {
+                                if (CursorPosY > Y) { }
+                                else if (CursorPosY < Y)
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f, y, line.Length * s.Width, s.Height);
+                                else
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f + CursorPosX * s.Width, y, (line.Length - CursorPosX) * s.Width, s.Height);
+                            }
+                            else
+                            {
+                                if (CursorPosY > Y)
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f + CursorX * s.Width, y, (line.Length - cursorX) * s.Width, s.Height);
+                                else if (CursorPosY < Y)
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f, y, CursorX * s.Width, s.Height);
+                                else
+                                {
+                                    int SX = Math.Min(cursorX, CursorPosX);
+                                    int WX = Math.Abs(cursorX - CursorPosX);
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f + SX * s.Width, y, WX * s.Width, s.Height);
+                                }
+                            }
+                        }
+                        if (Y == CursorY)
+                            e.Graphics.DrawLine(Pens.Black, 42.5f + CursorX * s.Width, y - VerticalScroll.Value, 42.5f + CursorX * s.Width, y + s.Height - VerticalScroll.Value);
+                        y += s.Height;
+                        Y++;
+                    }
+                    if (!IdentificationDivision)
+                    {
+                        e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
+                        y += s.Height;
+                    }
+                    if (!DataDivision)
+                    {
+                        e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        e.Graphics.DrawString("DATA DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "DATA");
+                        y += s.Height;
+                    }
+                    if (!ProcedureDivision)
+                    {
+                        e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        e.Graphics.DrawString("PROCEDURE DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "PROCEDURE");
+                        y += s.Height;
                     }
                 }
                 else
                 {
-                    if (line.Length > 1000)
-                        e.Graphics.DrawString(line.Substring(0,1000), Font, Brushes.Black, -HorizontalScroll.Value, y - VerticalScroll.Value);
-                    else
-                        e.Graphics.DrawString(line, Font, Brushes.Black, - HorizontalScroll.Value, y - VerticalScroll.Value);
-                }
-                y += s.Height;
+                    foreach (var line in lines)
+                    {
+                        float x = 0;
+                        var split = SplitSymbols(line);
+                        if (split.Any(item => item != null && item.Equals("IDENTIFICATION", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            IdentificationDivision = true;
+                        }
+                        if (split.Any(item => item != null && item.Equals("DATA", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            DataDivision = true;
+                            if (!IdentificationDivision)
+                            {
+                                IdentificationDivision = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
+                                y += s.Height;
+                            }
+                        }
+                        if (split.Any(item => item != null && item.Equals("PROCEDURE", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            ProcedureDivision = true;
+                            if (!IdentificationDivision)
+                            {
+                                IdentificationDivision = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
+                                y += s.Height;
+                            }
+                            if (!DataDivision)
+                            {
+                                DataDivision = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("DATA DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "DATA");
+                                y += s.Height;
+                            }
+                        }
+                        foreach (var word in split)
+                        {
+                            Brush brush = word.ToUpperInvariant() switch
+                            {
+                                "IDENTIFICATION" => Brushes.Blue,
+                                "PROGRAM-ID" => Brushes.Blue,
+                                "AUTHOR" => Brushes.Blue,
+                                "ENVIRONMENT" => Brushes.Blue,
+                                "CONFIGURATION" => Brushes.Blue,
+                                "DATA" => Brushes.Blue,
+                                "WORKING-STORAGE" => Brushes.Blue,
+                                "PROCEDURE" => Brushes.Blue,
+                                "DIVISION" => Brushes.DarkGreen,
+                                "SECTION" => Brushes.DarkGreen,
+                                "DISPLAY" => Brushes.DarkOrange,
+                                "ACCEPT" => Brushes.DarkOrange,
+                                "PIC" => Brushes.DarkOrange,
+                                "COMPUTE" => Brushes.DarkOrange,
+                                "ADD" => Brushes.DarkOrange,
+                                "SUBTRACT" => Brushes.DarkOrange,
+                                "MULTIPLY" => Brushes.DarkOrange,
+                                "DIVIDE" => Brushes.DarkOrange,
+                                "BY" => Brushes.DarkOrange,
+                                "TO" => Brushes.DarkOrange,
+                                "FROM" => Brushes.DarkOrange,
+                                "STOP" => Brushes.DarkOrange,
+                                "RUN" => Brushes.DarkOrange,
+                                _ => (float.TryParse(word, out float f)) ? Brushes.Red : word.StartsWith('"') ? Brushes.Green : Brushes.Black
+                            };
+                            e.Graphics.DrawString(word, Font, brush, 40 + x - HorizontalScroll.Value, y - VerticalScroll.Value);
+                            x += s.Width * word.Length;
+                        }
+                        RectangleF rec = new RectangleF(0, y - VerticalScroll.Value, 40, s.Height);
+                        e.Graphics.FillRectangle(Brushes.White, rec);
+                        e.Graphics.DrawString(Y.ToString(), Font, Brushes.Black, rec, new StringFormat() { Alignment = StringAlignment.Far });
+                        if (CursorPosX > -1)
+                        {
+                            if (CursorY < Y)
+                            {
+                                if (CursorPosY < Y) { }
+                                else if (CursorPosY > Y)
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f, y, line.Length * s.Width, s.Height);
+                                else
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f, y, CursorPosX * s.Width, s.Height);
+                            }
+                            else if (CursorY > Y)
+                            {
+                                if (CursorPosY > Y) { }
+                                else if (CursorPosY < Y)
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f, y, line.Length * s.Width, s.Height);
+                                else
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f, y, CursorX * s.Width, s.Height);
+                            }
+                            else
+                            {
+                                if (CursorPosY > Y)
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f + CursorX * s.Width, y, (line.Length - cursorX) * s.Width, s.Height);
+                                if (CursorPosY < Y)
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f, y, CursorX * s.Width, s.Height);
+                                else
+                                {
+                                    int SX = Math.Min(cursorX, CursorPosX);
+                                    int WX = Math.Abs(cursorX - CursorPosX);
+                                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 42.5f + SX * s.Width, y, WX * s.Width, s.Height);
+                                }
+                            }
+                        }
+                        if (Y - 1 == CursorY)
+                            e.Graphics.DrawLine(Pens.Black, 42.5f + CursorX * s.Width, y - VerticalScroll.Value, 42.5f + CursorX * s.Width, y + s.Height - VerticalScroll.Value);
+                        y += s.Height;
+                        Y++;
+                    }
+                    if (!IdentificationDivision)
+                    {
+                        e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
+                        y += s.Height;
+                    }
+                    if (!DataDivision)
+                    {
+                        e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        e.Graphics.DrawString("DATA DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "DATA");
+                        y += s.Height;
+                    }
+                    if (!ProcedureDivision)
+                    {
+                        e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        e.Graphics.DrawString("PROCEDURE DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "PROCEDURE");
+                        y += s.Height;
+                    }
+                }                
             }
-            if (CursorPosX > -1)
+            else
             {
-                if (CursorY == CursorPosY)//Same Line
+                foreach (var line in lines)
                 {
-                    int SX = Math.Min(cursorX, CursorPosX);
-                    int WX = Math.Abs(cursorX - CursorPosX);
-                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f + s.Width * SX, s.Height * cursorY, s.Width * WX, s.Height);
+                    e.Graphics.DrawString(line, Font, Brushes.Black, new RectangleF(-HorizontalScroll.Value, y - VerticalScroll.Value, Width, s.Height));
+                    y += s.Height;
                 }
-                else if (CursorY > CursorPosY)
+                if (CursorPosX > -1)
                 {
-                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f + s.Width * CursorPosX, s.Height * CursorPosY, s.Width * (lines[CursorPosY].Length-CursorPosX), s.Height);
-                    for (int i = CursorPosY + 1; i < CursorY; i++)
+                    if (CursorY == CursorPosY)//Same Line
                     {
-                        e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f, s.Height * i, s.Width * lines[i].Length, s.Height);
+                        int SX = Math.Min(cursorX, CursorPosX);
+                        int WX = Math.Abs(cursorX - CursorPosX);
+                        e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f + s.Width * SX, s.Height * cursorY, s.Width * WX, s.Height);
                     }
-                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f, s.Height * CursorY, s.Width * CursorX, s.Height);
-                }
-                else
-                {
-                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f + s.Width * CursorX, s.Height * CursorY, s.Width * (lines[CursorY].Length - CursorX), s.Height);
-                    for (int i = CursorY + 1; i < CursorPosY; i++)
+                    else if (CursorY > CursorPosY)
                     {
-                        e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f, s.Height * i, s.Width * lines[i].Length, s.Height);
+                        e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f + s.Width * CursorPosX, s.Height * CursorPosY, s.Width * (lines[CursorPosY].Length - CursorPosX), s.Height);
+                        for (int i = CursorPosY + 1; i < CursorY; i++)
+                        {
+                            e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f, s.Height * i, s.Width * lines[i].Length, s.Height);
+                        }
+                        e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f, s.Height * CursorY, s.Width * CursorX, s.Height);
                     }
-                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f, s.Height * CursorPosY, s.Width * CursorPosX, s.Height);
+                    else
+                    {
+                        e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f + s.Width * CursorX, s.Height * CursorY, s.Width * (lines[CursorY].Length - CursorX), s.Height);
+                        for (int i = CursorY + 1; i < CursorPosY; i++)
+                        {
+                            e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f, s.Height * i, s.Width * lines[i].Length, s.Height);
+                        }
+                        e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, 0, 0, 255)), 2.5f, s.Height * CursorPosY, s.Width * CursorPosX, s.Height);
+                    }
                 }
+                e.Graphics.DrawLine(Pens.Black, 2.5f + CursorX * s.Width, CursorY * s.Height - VerticalScroll.Value, 2.5f + CursorX * s.Width, (CursorY + 1) * s.Height - VerticalScroll.Value);
             }
-            e.Graphics.DrawLine(Pens.Black, 2.5f + CursorX * s.Width, CursorY * s.Height, 2.5f + CursorX * s.Width, (CursorY + 1) * s.Height);
         }
     }
 }

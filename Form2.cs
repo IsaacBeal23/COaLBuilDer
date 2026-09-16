@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace COalBOLder
 {
@@ -18,9 +20,24 @@ namespace COalBOLder
             InitializeComponent();
             if (Exists = File.Exists(loc = Directory.GetCurrentDirectory() + "\\Favourite.TXT"))
             {
-                textBox1.Text = File.ReadAllText(loc);
+                XDocument xmlDoc = XDocument.Load(loc);
+                var c = xmlDoc.Root!.Element("Favourite");
+                textBox1.Text = xmlDoc.Root!.Element("Favourite")?.Value ?? "";
+                IEnumerable<XElement> x;
+                if ((x = xmlDoc.Root!.Descendants("ColourScheme")).Count() > 0)
+                {
+                    foreach (var colour in x.Descendants())
+                    {
+                        foreach (var item in colour.Descendants())
+                        {
+                            colourScheme.Add(item.Value, Color.FromArgb((255<<24)+int.Parse(colour.Name.LocalName.Substring(1), NumberStyles.HexNumber, CultureInfo.InvariantCulture)));
+                        }
+                    }
+                }
             }
         }
+
+        Dictionary<string, Color> colourScheme = new Dictionary<string, Color>();
 
         bool Exists;
         string loc;
@@ -38,9 +55,9 @@ namespace COalBOLder
         {
             if (!Exists)
             {
-                File.WriteAllText(loc,textBox1.Text);
+                File.WriteAllText(loc,$"<Conditions>\n\t<Favourite>{textBox1.Text}</Favourite>\n\t<ColourScheme>\n\t\t<aFF0000>\n\t\t\t<a1>#numbers</a1>\n\t\t</aFF0000>\n\t\t<a00FF00>\n\t\t\t<a1>DIVISION</a1>\n\t\t<a2>SECTION</a2>\n\t\t</a00FF00>\n\t\t<a0000FF>\n\t\t\t<a1>PIC</a1>\n\t\t</a0000FF>\n\t</ColourScheme>\n</Conditions>");
             }
-            Form1 form1 = new Form1(textBox1.Text + "\\" + textBox2.Text, textBox2.Text);
+            Form1 form1 = new Form1(textBox1.Text + "\\" + textBox2.Text, textBox2.Text, colourScheme);
             this.Hide();
             form1.ShowDialog();
             this.Close();
@@ -57,7 +74,7 @@ namespace COalBOLder
                         l = s.ReadLine();
                         n = s.ReadLine();
                     }
-                    Form1 form1 = new Form1(l, n, true);
+                    Form1 form1 = new Form1(l, n, colourScheme, true);
                     this.Hide();
                     form1.ShowDialog();
                     this.Close();

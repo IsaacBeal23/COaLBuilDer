@@ -5,12 +5,14 @@ namespace COalBOLder
 {
     public partial class Form1 : Form
     {
-        public Form1(string location, string name, bool r = false)
+        public Form1(string location, string name, Dictionary<string, Color> cs, bool r = false)
         {
             InitializeComponent();
             this.location = location;
             Directory.CreateDirectory(this.location);
             this.name = name;
+            if (cs.Count > 0)
+                textEditor1.ColourScheme = cs;
             fileDisplay1.FileChangedEvent += ChangeFile;
             fileDisplay1.FileLocation = (this.location);
             if (r)
@@ -23,6 +25,8 @@ namespace COalBOLder
                 textEditor1.isCobol = true;
             }
         }
+
+        Dictionary<string, Color> CS = new Dictionary<string, Color>();
 
         public void ChangeFile(object sender, EventArgs e)
         {
