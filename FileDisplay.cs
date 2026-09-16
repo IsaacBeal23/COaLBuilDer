@@ -62,7 +62,8 @@ namespace COalBOLder
                         return;
                     }
                 }
-                FileChanged = binder.Files[Y-folder.Last().RungEnd].Item1;
+                if (folder.Count > 0)
+                    FileChanged = binder.Files[Y-folder.Last().RungEnd].Item1;
                 return;
             }
         }
