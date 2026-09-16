@@ -343,11 +343,6 @@ namespace COalBOLder
                 lines[CursorY] = Insert(CursorX, e.KeyChar, lines[CursorY]);
                 CursorX++;
             }
-            else if (char.IsSymbol(e.KeyChar))
-            {
-                lines[CursorY] = Insert(CursorX, e.KeyChar, lines[CursorY]);
-                CursorX++;
-            }
             else if (char.IsControl(e.KeyChar))
             {
                 switch (e.KeyChar)
@@ -370,6 +365,11 @@ namespace COalBOLder
                         Copy((Control.ModifierKeys & Keys.Shift) == Keys.Shift);
                         break;
                 }
+            }
+            else
+            {
+                lines[CursorY] = Insert(CursorX, e.KeyChar, lines[CursorY]);
+                CursorX++;
             }
             UpdateScrollArea();
             Invalidate();
