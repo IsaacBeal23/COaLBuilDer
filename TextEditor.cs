@@ -401,18 +401,34 @@ namespace COalBOLder
                 {
                     lines.InsertRange(c, breakLines[d] switch
                     {
-                        "IDENTIFICATION" => new string[] { "\t\tIDENTIFICATION DIVISION.", "\t\t\tPROGRAM-ID. XXXXX." },
-                        "DATA" => new string[] { "\t\tDATA DIVISION." },
-                        "PROCEDURE" => new string[] { "\t\tPROCEDURE DIVISION." },
+                        "IDENTIFICATION"  => new string[] { "       IDENTIFICATION DIVISION.", "            PROGRAM-ID. XXXXX." },
+                        "ENVIRONMENT"     => new string[] { "       ENVIRONMENT DIVISION." },
+                        "CONFIGURATION"   => new string[] { "           CONFIGURATION SECTION." },
+                        "INPUT-OUTPUT"    => new string[] { "           INPUT-OUTPUT SECTION." },
+                        "DATA"            => new string[] { "       DATA DIVISION." },
+                        "FILE"            => new string[] { "           FILE SECTION." },
+                        "WORKING-STORAGE" => new string[] { "           WORKING-STORAGE SECTION." },
+                        "LOCAL-STORAGE"   => new string[] { "           LOCAL-STORAGE SECTION." },
+                        "LINKAGE"         => new string[] { "           LINKAGE SECTION." },
+                        "PROCEDURE"       => new string[] { "       PROCEDURE DIVISION." },
+                        _                 => new string[] { }
                     });
                 }
                 else
                 {
                     lines.AddRange(breakLines[d] switch
                     {
-                        "IDENTIFICATION" => new string[] { "\t\tIDENTIFICATION DIVISION.", "\t\t\tPROGRAM-ID. XXXXX." },
-                        "DATA" => new string[] { "\t\tDATA DIVISION." },
-                        "PROCEDURE" => new string[] { "\t\tPROCEDURE DIVISION." },
+                        "IDENTIFICATION"  => new string[] { "       IDENTIFICATION DIVISION.", "            PROGRAM-ID. XXXXX." },
+                        "ENVIRONMENT"     => new string[] { "       ENVIRONMENT DIVISION." },
+                        "CONFIGURATION"   => new string[] { "           CONFIGURATION SECTION." },
+                        "INPUT-OUTPUT"    => new string[] { "           INPUT-OUTPUT SECTION." },
+                        "DATA"            => new string[] { "       DATA DIVISION." },
+                        "FILE"            => new string[] { "           FILE SECTION." },
+                        "WORKING-STORAGE" => new string[] { "           WORKING-STORAGE SECTION." },
+                        "LOCAL-STORAGE"   => new string[] { "           LOCAL-STORAGE SECTION." },
+                        "LINKAGE"         => new string[] { "           LINKAGE SECTION." },
+                        "PROCEDURE"       => new string[] { "       PROCEDURE DIVISION." },
+                        _                 => new string[] { }
                     });
                 }
             }
@@ -463,13 +479,20 @@ namespace COalBOLder
             breakLines = new Dictionary<int, string>();
             int scrollx = 0;
             int scrolly = 0;
-            bool IdentificationDivision = false;
-            bool DataDivision = false;
-            bool ProcedureDivision = false;
             float y = 0;
             int Y = 0;
             if (isCobol)
             {
+                bool IdentificationDivision = false;
+                bool EnvironmentDivision = false;
+                bool EConfigurationSection = false;
+                bool EInputOutputSection = false;
+                bool DataDivision = false;
+                bool DFileSection = false;
+                bool DWorkingStorageSection = false;
+                bool DLocalStorageSection = false;
+                bool DLinkageSection = false;
+                bool ProcedureDivision = false;
                 if (ColourScheme != null)
                 {
                     Brush brush = Brushes.Black;
@@ -481,6 +504,22 @@ namespace COalBOLder
                         {
                             IdentificationDivision = true;
                         }
+                        if (split.Any(item => item != null && item.Equals("ENVIRONMENT", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            EnvironmentDivision = true;
+                            if (!IdentificationDivision)
+                            {
+                                IdentificationDivision = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
+                                y += s.Height;
+                            }
+                        }
+                        if (split.Any(item => item != null && item.Equals("CONFIGURATION", StringComparison.OrdinalIgnoreCase)))
+                            EConfigurationSection = true;
+                        if (split.Any(item => item != null && item.Equals("INPUT-OUTPUT", StringComparison.OrdinalIgnoreCase)))
+                            EInputOutputSection = true;
                         if (split.Any(item => item != null && item.Equals("DATA", StringComparison.OrdinalIgnoreCase)))
                         {
                             DataDivision = true;
@@ -492,7 +531,42 @@ namespace COalBOLder
                                 breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
                                 y += s.Height;
                             }
+                            if (!EnvironmentDivision)
+                            {
+                                EnvironmentDivision = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("ENVIRONMENT DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "ENVIRONMENT");
+                                y += s.Height;
+                            }
+                            else
+                            {
+                                if (!EConfigurationSection)
+                                {
+                                    EConfigurationSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "CONFIGURATION");
+                                    y += s.Height;
+                                }
+                                if (!EInputOutputSection)
+                                {
+                                    EInputOutputSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
+                                    y += s.Height;
+                                }
+                            }
                         }
+                        if (split.Any(item => item != null && item.Equals("FILE", StringComparison.OrdinalIgnoreCase)))
+                            DFileSection = true;
+                        if (split.Any(item => item != null && item.Equals("WORKING-STORAGE", StringComparison.OrdinalIgnoreCase)))
+                            DWorkingStorageSection = true;
+                        if (split.Any(item => item != null && item.Equals("LOCAL-STORAGE", StringComparison.OrdinalIgnoreCase)))
+                            DLocalStorageSection = true;
+                        if (split.Any(item => item != null && item.Equals("LINKAGE", StringComparison.OrdinalIgnoreCase)))
+                            DLinkageSection = true;
                         if (split.Any(item => item != null && item.Equals("PROCEDURE", StringComparison.OrdinalIgnoreCase)))
                         {
                             ProcedureDivision = true;
@@ -504,6 +578,33 @@ namespace COalBOLder
                                 breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
                                 y += s.Height;
                             }
+                            if (!EnvironmentDivision)
+                            {
+                                EnvironmentDivision = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("ENVIRONMENT DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "ENVIRONMENT");
+                                y += s.Height;
+                            }
+                            else if (!DataDivision)
+                            {
+                                if (!EConfigurationSection)
+                                {
+                                    EConfigurationSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "CONFIGURATION");
+                                    y += s.Height;
+                                }
+                                if (!EInputOutputSection)
+                                {
+                                    EInputOutputSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
+                                    y += s.Height;
+                                }
+                            }
                             if (!DataDivision)
                             {
                                 DataDivision = true;
@@ -511,6 +612,41 @@ namespace COalBOLder
                                 e.Graphics.DrawString("DATA DIVISION", Font, Brushes.Black, 40 + s.Height, y);
                                 breakLines.Add((int)(y / s.Height), "DATA");
                                 y += s.Height;
+                            }
+                            else
+                            {
+                                if (!DFileSection)
+                                {
+                                    DFileSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("FILE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "FILE");
+                                    y += s.Height;
+                                }
+                                if (!DWorkingStorageSection)
+                                {
+                                    DWorkingStorageSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("WORKING-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "WORKING-STORAGE");
+                                    y += s.Height;
+                                }
+                                if (!DLocalStorageSection)
+                                {
+                                    DLocalStorageSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("LOCAL-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "LOCAL-STORAGE");
+                                    y += s.Height;
+                                }
+                                if (!DLinkageSection)
+                                {
+                                    DLinkageSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("LINKAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "LINKAGE");
+                                    y += s.Height;
+                                }
                             }
                         }
                         foreach (var word in split)
@@ -575,8 +711,31 @@ namespace COalBOLder
                         breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
                         y += s.Height;
                     }
+                    if (!EnvironmentDivision)
+                    {
+                        e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        e.Graphics.DrawString("ENVIRONMENT DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "ENVIRONMENT");
+                        y += s.Height;
+                    }
                     if (!DataDivision)
                     {
+                        if (!EConfigurationSection)
+                        {
+                            EConfigurationSection = true;
+                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                            e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                            breakLines.Add((int)(y / s.Height), "CONFIGURATION");
+                            y += s.Height;
+                        }
+                        if (!EInputOutputSection)
+                        {
+                            EInputOutputSection = true;
+                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                            e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                            breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
+                            y += s.Height;
+                        }
                         e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
                         e.Graphics.DrawString("DATA DIVISION", Font, Brushes.Black, 40 + s.Height, y);
                         breakLines.Add((int)(y / s.Height), "DATA");
@@ -584,6 +743,38 @@ namespace COalBOLder
                     }
                     if (!ProcedureDivision)
                     {
+                        if (!DFileSection)
+                        {
+                            DFileSection = true;
+                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                            e.Graphics.DrawString("FILE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                            breakLines.Add((int)(y / s.Height), "FILE");
+                            y += s.Height;
+                        }
+                        if (!DWorkingStorageSection)
+                        {
+                            DWorkingStorageSection = true;
+                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                            e.Graphics.DrawString("WORKING-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                            breakLines.Add((int)(y / s.Height), "WORKING-STORAGE");
+                            y += s.Height;
+                        }
+                        if (!DLocalStorageSection)
+                        {
+                            DLocalStorageSection = true;
+                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                            e.Graphics.DrawString("LOCAL-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                            breakLines.Add((int)(y / s.Height), "LOCAL-STORAGE");
+                            y += s.Height;
+                        }
+                        if (!DLinkageSection)
+                        {
+                            DLinkageSection = true;
+                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                            e.Graphics.DrawString("LINKAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                            breakLines.Add((int)(y / s.Height), "LINKAGE");
+                            y += s.Height;
+                        }
                         e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
                         e.Graphics.DrawString("PROCEDURE DIVISION", Font, Brushes.Black, 40 + s.Height, y);
                         breakLines.Add((int)(y / s.Height), "PROCEDURE");
@@ -600,6 +791,22 @@ namespace COalBOLder
                         {
                             IdentificationDivision = true;
                         }
+                        if (split.Any(item => item != null && item.Equals("ENVIRONMENT", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            EnvironmentDivision = true;
+                            if (!IdentificationDivision)
+                            {
+                                IdentificationDivision = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
+                                y += s.Height;
+                            }
+                        }
+                        if (split.Any(item => item != null && item.Equals("CONFIGURATION", StringComparison.OrdinalIgnoreCase)))
+                            EConfigurationSection = true;
+                        if (split.Any(item => item != null && item.Equals("INPUT-OUTPUT", StringComparison.OrdinalIgnoreCase)))
+                            EInputOutputSection = true;
                         if (split.Any(item => item != null && item.Equals("DATA", StringComparison.OrdinalIgnoreCase)))
                         {
                             DataDivision = true;
@@ -611,7 +818,42 @@ namespace COalBOLder
                                 breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
                                 y += s.Height;
                             }
+                            if (!EnvironmentDivision)
+                            {
+                                EnvironmentDivision = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("ENVIRONMENT DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "ENVIRONMENT");
+                                y += s.Height;
+                            }
+                            else
+                            {
+                                if (!EConfigurationSection)
+                                {
+                                    EConfigurationSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "CONFIGURATION");
+                                    y += s.Height;
+                                }
+                                if (!EInputOutputSection)
+                                {
+                                    EInputOutputSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
+                                    y += s.Height;
+                                }
+                            }
                         }
+                        if (split.Any(item => item != null && item.Equals("FILE", StringComparison.OrdinalIgnoreCase)))
+                            DFileSection = true;
+                        if (split.Any(item => item != null && item.Equals("WORKING-STORAGE", StringComparison.OrdinalIgnoreCase)))
+                            DWorkingStorageSection = true;
+                        if (split.Any(item => item != null && item.Equals("LOCAL-STORAGE", StringComparison.OrdinalIgnoreCase)))
+                            DLocalStorageSection = true;
+                        if (split.Any(item => item != null && item.Equals("LINKAGE", StringComparison.OrdinalIgnoreCase)))
+                            DLinkageSection = true;
                         if (split.Any(item => item != null && item.Equals("PROCEDURE", StringComparison.OrdinalIgnoreCase)))
                         {
                             ProcedureDivision = true;
@@ -623,6 +865,34 @@ namespace COalBOLder
                                 breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
                                 y += s.Height;
                             }
+                            if (!EnvironmentDivision)
+                            {
+                                EnvironmentDivision = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("ENVIRONMENT DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "ENVIRONMENT");
+                                y += s.Height;
+                            }
+                            else if (!DataDivision)
+                            {
+                                //MessageBox.Show("Environment Division is missing, adding it automatically.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                if (!EConfigurationSection)
+                                {
+                                    EConfigurationSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "CONFIGURATION");
+                                    y += s.Height;
+                                }
+                                if (!EInputOutputSection)
+                                {
+                                    EInputOutputSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
+                                    y += s.Height;
+                                }
+                            }
                             if (!DataDivision)
                             {
                                 DataDivision = true;
@@ -631,34 +901,70 @@ namespace COalBOLder
                                 breakLines.Add((int)(y / s.Height), "DATA");
                                 y += s.Height;
                             }
+                            else
+                            {
+                                if (!DFileSection)
+                                {
+                                    DFileSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("FILE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "FILE");
+                                    y += s.Height;
+                                }
+                                if (!DWorkingStorageSection)
+                                {
+                                    DWorkingStorageSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("WORKING-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "WORKING-STORAGE");
+                                    y += s.Height;
+                                }
+                                if (!DLocalStorageSection)
+                                {
+                                    DLocalStorageSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("LOCAL-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "LOCAL-STORAGE");
+                                    y += s.Height;
+                                }
+                                if (!DLinkageSection)
+                                {
+                                    DLinkageSection = true;
+                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                    e.Graphics.DrawString("LINKAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                    breakLines.Add((int)(y / s.Height), "LINKAGE");
+                                    y += s.Height;
+                                }
+                            }
                         }
                         foreach (var word in split)
                         {
                             Brush brush = word.ToUpperInvariant() switch
                             {
-                                "IDENTIFICATION" => Brushes.Blue,
-                                "PROGRAM-ID" => Brushes.Blue,
-                                "AUTHOR" => Brushes.Blue,
-                                "ENVIRONMENT" => Brushes.Blue,
-                                "CONFIGURATION" => Brushes.Blue,
-                                "DATA" => Brushes.Blue,
+                                "IDENTIFICATION"  => Brushes.Blue,
+                                "PROGRAM-ID"      => Brushes.Blue,
+                                "AUTHOR"          => Brushes.Blue,
+                                "ENVIRONMENT"     => Brushes.Blue,
+                                "CONFIGURATION"   => Brushes.Blue,
+                                "INPUT-OUTPUT"    => Brushes.Blue,
+                                "DATA"            => Brushes.Blue,
                                 "WORKING-STORAGE" => Brushes.Blue,
-                                "PROCEDURE" => Brushes.Blue,
-                                "DIVISION" => Brushes.DarkGreen,
-                                "SECTION" => Brushes.DarkGreen,
-                                "DISPLAY" => Brushes.DarkOrange,
-                                "ACCEPT" => Brushes.DarkOrange,
-                                "PIC" => Brushes.DarkOrange,
-                                "COMPUTE" => Brushes.DarkOrange,
-                                "ADD" => Brushes.DarkOrange,
-                                "SUBTRACT" => Brushes.DarkOrange,
-                                "MULTIPLY" => Brushes.DarkOrange,
-                                "DIVIDE" => Brushes.DarkOrange,
-                                "BY" => Brushes.DarkOrange,
-                                "TO" => Brushes.DarkOrange,
-                                "FROM" => Brushes.DarkOrange,
-                                "STOP" => Brushes.DarkOrange,
-                                "RUN" => Brushes.DarkOrange,
+                                "PROCEDURE"       => Brushes.Blue,
+                                "DIVISION"        => Brushes.DarkGreen,
+                                "SECTION"         => Brushes.DarkGreen,
+                                "DISPLAY"         => Brushes.DarkOrange,
+                                "ACCEPT"          => Brushes.DarkOrange,
+                                "PIC"             => Brushes.DarkOrange,
+                                "COMPUTE"         => Brushes.DarkOrange,
+                                "ADD"             => Brushes.DarkOrange,
+                                "SUBTRACT"        => Brushes.DarkOrange,
+                                "MULTIPLY"        => Brushes.DarkOrange,
+                                "DIVIDE"          => Brushes.DarkOrange,
+                                "BY"              => Brushes.DarkOrange,
+                                "TO"              => Brushes.DarkOrange,
+                                "FROM"            => Brushes.DarkOrange,
+                                "STOP"            => Brushes.DarkOrange,
+                                "RUN"             => Brushes.DarkOrange,
                                 _ => (float.TryParse(word, out float f)) ? Brushes.Red : word.StartsWith('"') ? Brushes.Green : Brushes.Black
                             };
                             e.Graphics.DrawString(word, Font, brush, 40 + x - HorizontalScroll.Value, y - VerticalScroll.Value);
@@ -701,6 +1007,11 @@ namespace COalBOLder
                         }
                         if (Y == CursorY)
                             e.Graphics.DrawLine(Pens.Black, 42.5f + CursorX * s.Width, y - VerticalScroll.Value, 42.5f + CursorX * s.Width, y + s.Height - VerticalScroll.Value);
+                        if (Y < lines.Count - 1)
+                            if (Regex.Match(line, @"^ +").Value.Length < Regex.Match(lines[Y + 1], @"^ +").Value.Length)
+                            {
+                                e.Graphics.DrawLines(Pens.Black, new PointF[] { new PointF(5, y + 5), new PointF(s.Height / 2, y + s.Height / 2), new PointF(s.Height - 5, y + 5) });
+                            }
                         y += s.Height;
                         Y++;
                     }
@@ -711,8 +1022,31 @@ namespace COalBOLder
                         breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
                         y += s.Height;
                     }
+                    if (!EnvironmentDivision)
+                    {
+                        e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        e.Graphics.DrawString("ENVIRONMENT DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "ENVIRONMENT");
+                        y += s.Height;
+                    }
                     if (!DataDivision)
                     {
+                        if (!EConfigurationSection)
+                        {
+                            EConfigurationSection = true;
+                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                            e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                            breakLines.Add((int)(y / s.Height), "CONFIGURATION");
+                            y += s.Height;
+                        }
+                        if (!EInputOutputSection)
+                        {
+                            EInputOutputSection = true;
+                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                            e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                            breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
+                            y += s.Height;
+                        }
                         e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
                         e.Graphics.DrawString("DATA DIVISION", Font, Brushes.Black, 40 + s.Height, y);
                         breakLines.Add((int)(y / s.Height), "DATA");
@@ -720,6 +1054,38 @@ namespace COalBOLder
                     }
                     if (!ProcedureDivision)
                     {
+                        if (!DFileSection)
+                        {
+                            DFileSection = true;
+                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                            e.Graphics.DrawString("FILE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                            breakLines.Add((int)(y / s.Height), "FILE");
+                            y += s.Height;
+                        }
+                        if (!DWorkingStorageSection)
+                        {
+                            DWorkingStorageSection = true;
+                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                            e.Graphics.DrawString("WORKING-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                            breakLines.Add((int)(y / s.Height), "WORKING-STORAGE");
+                            y += s.Height;
+                        }
+                        if (!DLocalStorageSection)
+                        {
+                            DLocalStorageSection = true;
+                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                            e.Graphics.DrawString("LOCAL-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                            breakLines.Add((int)(y / s.Height), "LOCAL-STORAGE");
+                            y += s.Height;
+                        }
+                        if (!DLinkageSection)
+                        {
+                            DLinkageSection = true;
+                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                            e.Graphics.DrawString("LINKAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                            breakLines.Add((int)(y / s.Height), "LINKAGE");
+                            y += s.Height;
+                        }
                         e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
                         e.Graphics.DrawString("PROCEDURE DIVISION", Font, Brushes.Black, 40 + s.Height, y);
                         breakLines.Add((int)(y / s.Height), "PROCEDURE");
