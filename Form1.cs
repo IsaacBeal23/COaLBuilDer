@@ -24,6 +24,7 @@ namespace COalBOLder
                 textEditor1.CreateIdDivision(name);
                 textEditor1.isCobol = true;
             }
+            MessageBox.Show("This is a beta version of COalBOLder, please report any bugs to the developer.");
         }
 
         Dictionary<string, Color> CS = new Dictionary<string, Color>();

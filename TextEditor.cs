@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -559,6 +560,11 @@ namespace COalBOLder
                         }
                         if (Y == CursorY)
                             e.Graphics.DrawLine(Pens.Black, 42.5f + CursorX * s.Width, y - VerticalScroll.Value, 42.5f + CursorX * s.Width, y + s.Height - VerticalScroll.Value);
+                        if (Y < lines.Count - 1)
+                            if (Regex.Match(line, @"^ +").Value.Length < Regex.Match(lines[Y + 1], @"^ +").Value.Length)
+                            {
+                                e.Graphics.DrawLines(Pens.Black, new PointF[] { new PointF(5, y + 5), new PointF(s.Height/2, y + s.Height / 2), new PointF(s.Height - 5, y+5) });
+                            }
                         y += s.Height;
                         Y++;
                     }
