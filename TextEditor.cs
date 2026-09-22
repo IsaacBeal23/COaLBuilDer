@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace COalBOLder
 {
@@ -500,155 +501,7 @@ namespace COalBOLder
                     {
                         float x = 0;
                         var split = SplitSymbols(line);
-                        if (split.Any(item => item != null && item.Equals("IDENTIFICATION", StringComparison.OrdinalIgnoreCase)))
-                        {
-                            IdentificationDivision = true;
-                        }
-                        if (split.Any(item => item != null && item.Equals("ENVIRONMENT", StringComparison.OrdinalIgnoreCase)))
-                        {
-                            EnvironmentDivision = true;
-                            if (!IdentificationDivision)
-                            {
-                                IdentificationDivision = true;
-                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
-                                breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
-                                y += s.Height;
-                            }
-                        }
-                        if (split.Any(item => item != null && item.Equals("CONFIGURATION", StringComparison.OrdinalIgnoreCase)))
-                            EConfigurationSection = true;
-                        if (split.Any(item => item != null && item.Equals("INPUT-OUTPUT", StringComparison.OrdinalIgnoreCase)))
-                            EInputOutputSection = true;
-                        if (split.Any(item => item != null && item.Equals("DATA", StringComparison.OrdinalIgnoreCase)))
-                        {
-                            DataDivision = true;
-                            if (!IdentificationDivision)
-                            {
-                                IdentificationDivision = true;
-                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
-                                breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
-                                y += s.Height;
-                            }
-                            if (!EnvironmentDivision)
-                            {
-                                EnvironmentDivision = true;
-                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                e.Graphics.DrawString("ENVIRONMENT DIVISION", Font, Brushes.Black, 40 + s.Height, y);
-                                breakLines.Add((int)(y / s.Height), "ENVIRONMENT");
-                                y += s.Height;
-                            }
-                            else
-                            {
-                                if (!EConfigurationSection)
-                                {
-                                    EConfigurationSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "CONFIGURATION");
-                                    y += s.Height;
-                                }
-                                if (!EInputOutputSection)
-                                {
-                                    EInputOutputSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
-                                    y += s.Height;
-                                }
-                            }
-                        }
-                        if (split.Any(item => item != null && item.Equals("FILE", StringComparison.OrdinalIgnoreCase)))
-                            DFileSection = true;
-                        if (split.Any(item => item != null && item.Equals("WORKING-STORAGE", StringComparison.OrdinalIgnoreCase)))
-                            DWorkingStorageSection = true;
-                        if (split.Any(item => item != null && item.Equals("LOCAL-STORAGE", StringComparison.OrdinalIgnoreCase)))
-                            DLocalStorageSection = true;
-                        if (split.Any(item => item != null && item.Equals("LINKAGE", StringComparison.OrdinalIgnoreCase)))
-                            DLinkageSection = true;
-                        if (split.Any(item => item != null && item.Equals("PROCEDURE", StringComparison.OrdinalIgnoreCase)))
-                        {
-                            ProcedureDivision = true;
-                            if (!IdentificationDivision)
-                            {
-                                IdentificationDivision = true;
-                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
-                                breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
-                                y += s.Height;
-                            }
-                            if (!EnvironmentDivision)
-                            {
-                                EnvironmentDivision = true;
-                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                e.Graphics.DrawString("ENVIRONMENT DIVISION", Font, Brushes.Black, 40 + s.Height, y);
-                                breakLines.Add((int)(y / s.Height), "ENVIRONMENT");
-                                y += s.Height;
-                            }
-                            else if (!DataDivision)
-                            {
-                                if (!EConfigurationSection)
-                                {
-                                    EConfigurationSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "CONFIGURATION");
-                                    y += s.Height;
-                                }
-                                if (!EInputOutputSection)
-                                {
-                                    EInputOutputSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
-                                    y += s.Height;
-                                }
-                            }
-                            if (!DataDivision)
-                            {
-                                DataDivision = true;
-                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                e.Graphics.DrawString("DATA DIVISION", Font, Brushes.Black, 40 + s.Height, y);
-                                breakLines.Add((int)(y / s.Height), "DATA");
-                                y += s.Height;
-                            }
-                            else
-                            {
-                                if (!DFileSection)
-                                {
-                                    DFileSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("FILE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "FILE");
-                                    y += s.Height;
-                                }
-                                if (!DWorkingStorageSection)
-                                {
-                                    DWorkingStorageSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("WORKING-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "WORKING-STORAGE");
-                                    y += s.Height;
-                                }
-                                if (!DLocalStorageSection)
-                                {
-                                    DLocalStorageSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("LOCAL-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "LOCAL-STORAGE");
-                                    y += s.Height;
-                                }
-                                if (!DLinkageSection)
-                                {
-                                    DLinkageSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("LINKAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "LINKAGE");
-                                    y += s.Height;
-                                }
-                            }
-                        }
+                        CheckDIVSEC(e.Graphics, split, ref y, ref IdentificationDivision, ref EnvironmentDivision, ref EConfigurationSection, ref EInputOutputSection, ref DataDivision, ref DFileSection, ref DWorkingStorageSection, ref DLocalStorageSection, ref DLinkageSection, ref ProcedureDivision);
                         foreach (var word in split)
                         {
                             string w = word.ToUpperInvariant();
@@ -787,156 +640,7 @@ namespace COalBOLder
                     {
                         float x = 0;
                         var split = SplitSymbols(line);
-                        if (split.Any(item => item != null && item.Equals("IDENTIFICATION", StringComparison.OrdinalIgnoreCase)))
-                        {
-                            IdentificationDivision = true;
-                        }
-                        if (split.Any(item => item != null && item.Equals("ENVIRONMENT", StringComparison.OrdinalIgnoreCase)))
-                        {
-                            EnvironmentDivision = true;
-                            if (!IdentificationDivision)
-                            {
-                                IdentificationDivision = true;
-                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
-                                breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
-                                y += s.Height;
-                            }
-                        }
-                        if (split.Any(item => item != null && item.Equals("CONFIGURATION", StringComparison.OrdinalIgnoreCase)))
-                            EConfigurationSection = true;
-                        if (split.Any(item => item != null && item.Equals("INPUT-OUTPUT", StringComparison.OrdinalIgnoreCase)))
-                            EInputOutputSection = true;
-                        if (split.Any(item => item != null && item.Equals("DATA", StringComparison.OrdinalIgnoreCase)))
-                        {
-                            DataDivision = true;
-                            if (!IdentificationDivision)
-                            {
-                                IdentificationDivision = true;
-                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
-                                breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
-                                y += s.Height;
-                            }
-                            if (!EnvironmentDivision)
-                            {
-                                EnvironmentDivision = true;
-                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                e.Graphics.DrawString("ENVIRONMENT DIVISION", Font, Brushes.Black, 40 + s.Height, y);
-                                breakLines.Add((int)(y / s.Height), "ENVIRONMENT");
-                                y += s.Height;
-                            }
-                            else
-                            {
-                                if (!EConfigurationSection)
-                                {
-                                    EConfigurationSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "CONFIGURATION");
-                                    y += s.Height;
-                                }
-                                if (!EInputOutputSection)
-                                {
-                                    EInputOutputSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
-                                    y += s.Height;
-                                }
-                            }
-                        }
-                        if (split.Any(item => item != null && item.Equals("FILE", StringComparison.OrdinalIgnoreCase)))
-                            DFileSection = true;
-                        if (split.Any(item => item != null && item.Equals("WORKING-STORAGE", StringComparison.OrdinalIgnoreCase)))
-                            DWorkingStorageSection = true;
-                        if (split.Any(item => item != null && item.Equals("LOCAL-STORAGE", StringComparison.OrdinalIgnoreCase)))
-                            DLocalStorageSection = true;
-                        if (split.Any(item => item != null && item.Equals("LINKAGE", StringComparison.OrdinalIgnoreCase)))
-                            DLinkageSection = true;
-                        if (split.Any(item => item != null && item.Equals("PROCEDURE", StringComparison.OrdinalIgnoreCase)))
-                        {
-                            ProcedureDivision = true;
-                            if (!IdentificationDivision)
-                            {
-                                IdentificationDivision = true;
-                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                e.Graphics.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
-                                breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
-                                y += s.Height;
-                            }
-                            if (!EnvironmentDivision)
-                            {
-                                EnvironmentDivision = true;
-                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                e.Graphics.DrawString("ENVIRONMENT DIVISION", Font, Brushes.Black, 40 + s.Height, y);
-                                breakLines.Add((int)(y / s.Height), "ENVIRONMENT");
-                                y += s.Height;
-                            }
-                            else if (!DataDivision)
-                            {
-                                //MessageBox.Show("Environment Division is missing, adding it automatically.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                if (!EConfigurationSection)
-                                {
-                                    EConfigurationSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "CONFIGURATION");
-                                    y += s.Height;
-                                }
-                                if (!EInputOutputSection)
-                                {
-                                    EInputOutputSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
-                                    y += s.Height;
-                                }
-                            }
-                            if (!DataDivision)
-                            {
-                                DataDivision = true;
-                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                e.Graphics.DrawString("DATA DIVISION", Font, Brushes.Black, 40 + s.Height, y);
-                                breakLines.Add((int)(y / s.Height), "DATA");
-                                y += s.Height;
-                            }
-                            else
-                            {
-                                if (!DFileSection)
-                                {
-                                    DFileSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("FILE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "FILE");
-                                    y += s.Height;
-                                }
-                                if (!DWorkingStorageSection)
-                                {
-                                    DWorkingStorageSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("WORKING-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "WORKING-STORAGE");
-                                    y += s.Height;
-                                }
-                                if (!DLocalStorageSection)
-                                {
-                                    DLocalStorageSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("LOCAL-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "LOCAL-STORAGE");
-                                    y += s.Height;
-                                }
-                                if (!DLinkageSection)
-                                {
-                                    DLinkageSection = true;
-                                    e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                                    e.Graphics.DrawString("LINKAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                                    breakLines.Add((int)(y / s.Height), "LINKAGE");
-                                    y += s.Height;
-                                }
-                            }
-                        }
+                        CheckDIVSEC(e.Graphics, split, ref y, ref IdentificationDivision, ref EnvironmentDivision, ref EConfigurationSection, ref EInputOutputSection, ref DataDivision, ref DFileSection, ref DWorkingStorageSection, ref DLocalStorageSection, ref DLinkageSection, ref ProcedureDivision);
                         foreach (var word in split)
                         {
                             Brush brush = word.ToUpperInvariant() switch
@@ -1128,6 +832,158 @@ namespace COalBOLder
                     }
                 }
                 e.Graphics.DrawLine(Pens.Black, 2.5f + CursorX * s.Width, CursorY * s.Height - VerticalScroll.Value, 2.5f + CursorX * s.Width, (CursorY + 1) * s.Height - VerticalScroll.Value);
+            }
+        }
+        void CheckDIVSEC(Graphics g, List<string> split, ref float y, ref bool IdentificationDivision, ref bool EnvironmentDivision, ref bool EConfigurationSection, ref bool EInputOutputSection, ref bool DataDivision, ref bool DFileSection, ref bool DWorkingStorageSection, ref bool DLocalStorageSection, ref bool DLinkageSection, ref bool ProcedureDivision)
+        {
+            if (split.Any(item => item != null && item.Equals("IDENTIFICATION", StringComparison.OrdinalIgnoreCase)))
+            {
+                IdentificationDivision = true;
+            }
+            if (split.Any(item => item != null && item.Equals("ENVIRONMENT", StringComparison.OrdinalIgnoreCase)))
+            {
+                EnvironmentDivision = true;
+                if (!IdentificationDivision)
+                {
+                    IdentificationDivision = true;
+                    g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                    g.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                    breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
+                    y += s.Height;
+                }
+            }
+            if (split.Any(item => item != null && item.Equals("CONFIGURATION", StringComparison.OrdinalIgnoreCase)))
+                EConfigurationSection = true;
+            if (split.Any(item => item != null && item.Equals("INPUT-OUTPUT", StringComparison.OrdinalIgnoreCase)))
+                EInputOutputSection = true;
+            if (split.Any(item => item != null && item.Equals("DATA", StringComparison.OrdinalIgnoreCase)))
+            {
+                DataDivision = true;
+                if (!IdentificationDivision)
+                {
+                    IdentificationDivision = true;
+                    g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                    g.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                    breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
+                    y += s.Height;
+                }
+                if (!EnvironmentDivision)
+                {
+                    EnvironmentDivision = true;
+                    g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                    g.DrawString("ENVIRONMENT DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                    breakLines.Add((int)(y / s.Height), "ENVIRONMENT");
+                    y += s.Height;
+                }
+                else
+                {
+                    if (!EConfigurationSection)
+                    {
+                        EConfigurationSection = true;
+                        g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        g.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "CONFIGURATION");
+                        y += s.Height;
+                    }
+                    if (!EInputOutputSection)
+                    {
+                        EInputOutputSection = true;
+                        g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        g.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
+                        y += s.Height;
+                    }
+                }
+            }
+            if (split.Any(item => item != null && item.Equals("FILE", StringComparison.OrdinalIgnoreCase)))
+                DFileSection = true;
+            if (split.Any(item => item != null && item.Equals("WORKING-STORAGE", StringComparison.OrdinalIgnoreCase)))
+                DWorkingStorageSection = true;
+            if (split.Any(item => item != null && item.Equals("LOCAL-STORAGE", StringComparison.OrdinalIgnoreCase)))
+                DLocalStorageSection = true;
+            if (split.Any(item => item != null && item.Equals("LINKAGE", StringComparison.OrdinalIgnoreCase)))
+                DLinkageSection = true;
+            if (split.Any(item => item != null && item.Equals("PROCEDURE", StringComparison.OrdinalIgnoreCase)))
+            {
+                ProcedureDivision = true;
+                if (!IdentificationDivision)
+                {
+                    IdentificationDivision = true;
+                    g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                    g.DrawString("IDENTIFICATION DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                    breakLines.Add((int)(y / s.Height), "IDENTIFICATION");
+                    y += s.Height;
+                }
+                if (!EnvironmentDivision)
+                {
+                    EnvironmentDivision = true;
+                    g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                    g.DrawString("ENVIRONMENT DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                    breakLines.Add((int)(y / s.Height), "ENVIRONMENT");
+                    y += s.Height;
+                }
+                else if (!DataDivision)
+                {
+                    if (!EConfigurationSection)
+                    {
+                        EConfigurationSection = true;
+                        g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        g.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "CONFIGURATION");
+                        y += s.Height;
+                    }
+                    if (!EInputOutputSection)
+                    {
+                        EInputOutputSection = true;
+                        g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        g.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
+                        y += s.Height;
+                    }
+                }
+                if (!DataDivision)
+                {
+                    DataDivision = true;
+                    g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                    g.DrawString("DATA DIVISION", Font, Brushes.Black, 40 + s.Height, y);
+                    breakLines.Add((int)(y / s.Height), "DATA");
+                    y += s.Height;
+                }
+                else
+                {
+                    if (!DFileSection)
+                    {
+                        DFileSection = true;
+                        g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        g.DrawString("FILE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "FILE");
+                        y += s.Height;
+                    }
+                    if (!DWorkingStorageSection)
+                    {
+                        DWorkingStorageSection = true;
+                        g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        g.DrawString("WORKING-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "WORKING-STORAGE");
+                        y += s.Height;
+                    }
+                    if (!DLocalStorageSection)
+                    {
+                        DLocalStorageSection = true;
+                        g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        g.DrawString("LOCAL-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "LOCAL-STORAGE");
+                        y += s.Height;
+                    }
+                    if (!DLinkageSection)
+                    {
+                        DLinkageSection = true;
+                        g.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                        g.DrawString("LINKAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                        breakLines.Add((int)(y / s.Height), "LINKAGE");
+                        y += s.Height;
+                    }
+                }
             }
         }
     }
