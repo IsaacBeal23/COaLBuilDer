@@ -699,7 +699,7 @@ namespace COalBOLder
                                 }
                             }
                         }
-                        if (Y - 1 == CursorY)
+                        if (Y == CursorY)
                             e.Graphics.DrawLine(Pens.Black, 42.5f + CursorX * s.Width, y - VerticalScroll.Value, 42.5f + CursorX * s.Width, y + s.Height - VerticalScroll.Value);
                         y += s.Height;
                         Y++;
