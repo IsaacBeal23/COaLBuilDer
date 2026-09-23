@@ -635,21 +635,24 @@ namespace COalBOLder
                     }
                     if (!DataDivision)
                     {
-                        if (!EConfigurationSection)
+                        if (EnvironmentDivision)
                         {
-                            EConfigurationSection = true;
-                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                            e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                            breakLines.Add((int)(y / s.Height), "CONFIGURATION");
-                            y += s.Height;
-                        }
-                        if (!EInputOutputSection)
-                        {
-                            EInputOutputSection = true;
-                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                            e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                            breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
-                            y += s.Height;
+                            if (!EConfigurationSection)
+                            {
+                                EConfigurationSection = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "CONFIGURATION");
+                                y += s.Height;
+                            }
+                            if (!EInputOutputSection)
+                            {
+                                EInputOutputSection = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
+                                y += s.Height;
+                            }
                         }
                         e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
                         e.Graphics.DrawString("DATA DIVISION", Font, Brushes.Black, 40 + s.Height, y);
@@ -658,37 +661,40 @@ namespace COalBOLder
                     }
                     if (!ProcedureDivision)
                     {
-                        if (!DFileSection)
+                        if (DataDivision)
                         {
-                            DFileSection = true;
-                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                            e.Graphics.DrawString("FILE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                            breakLines.Add((int)(y / s.Height), "FILE");
-                            y += s.Height;
-                        }
-                        if (!DWorkingStorageSection)
-                        {
-                            DWorkingStorageSection = true;
-                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                            e.Graphics.DrawString("WORKING-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                            breakLines.Add((int)(y / s.Height), "WORKING-STORAGE");
-                            y += s.Height;
-                        }
-                        if (!DLocalStorageSection)
-                        {
-                            DLocalStorageSection = true;
-                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                            e.Graphics.DrawString("LOCAL-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                            breakLines.Add((int)(y / s.Height), "LOCAL-STORAGE");
-                            y += s.Height;
-                        }
-                        if (!DLinkageSection)
-                        {
-                            DLinkageSection = true;
-                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                            e.Graphics.DrawString("LINKAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                            breakLines.Add((int)(y / s.Height), "LINKAGE");
-                            y += s.Height;
+                            if (!DFileSection)
+                            {
+                                DFileSection = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("FILE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "FILE");
+                                y += s.Height;
+                            }
+                            if (!DWorkingStorageSection)
+                            {
+                                DWorkingStorageSection = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("WORKING-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "WORKING-STORAGE");
+                                y += s.Height;
+                            }
+                            if (!DLocalStorageSection)
+                            {
+                                DLocalStorageSection = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("LOCAL-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "LOCAL-STORAGE");
+                                y += s.Height;
+                            }
+                            if (!DLinkageSection)
+                            {
+                                DLinkageSection = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("LINKAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "LINKAGE");
+                                y += s.Height;
+                            }
                         }
                         e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
                         e.Graphics.DrawString("PROCEDURE DIVISION", Font, Brushes.Black, 40 + s.Height, y);
@@ -798,7 +804,6 @@ namespace COalBOLder
                             }
                         }
                         y += s.Height;
-                        Y++;
                     }
                     if (!IdentificationDivision)
                     {
@@ -816,21 +821,24 @@ namespace COalBOLder
                     }
                     if (!DataDivision)
                     {
-                        if (!EConfigurationSection)
+                        if (EnvironmentDivision)
                         {
-                            EConfigurationSection = true;
-                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                            e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                            breakLines.Add((int)(y / s.Height), "CONFIGURATION");
-                            y += s.Height;
-                        }
-                        if (!EInputOutputSection)
-                        {
-                            EInputOutputSection = true;
-                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                            e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                            breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
-                            y += s.Height;
+                            if (!EConfigurationSection)
+                            {
+                                EConfigurationSection = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("CONFIGURATION SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "CONFIGURATION");
+                                y += s.Height;
+                            }
+                            if (!EInputOutputSection)
+                            {
+                                EInputOutputSection = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("INPUT-OUTPUT SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "INPUT-OUTPUT");
+                                y += s.Height;
+                            }
                         }
                         e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
                         e.Graphics.DrawString("DATA DIVISION", Font, Brushes.Black, 40 + s.Height, y);
@@ -839,37 +847,40 @@ namespace COalBOLder
                     }
                     if (!ProcedureDivision)
                     {
-                        if (!DFileSection)
+                        if (DataDivision)
                         {
-                            DFileSection = true;
-                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                            e.Graphics.DrawString("FILE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                            breakLines.Add((int)(y / s.Height), "FILE");
-                            y += s.Height;
-                        }
-                        if (!DWorkingStorageSection)
-                        {
-                            DWorkingStorageSection = true;
-                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                            e.Graphics.DrawString("WORKING-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                            breakLines.Add((int)(y / s.Height), "WORKING-STORAGE");
-                            y += s.Height;
-                        }
-                        if (!DLocalStorageSection)
-                        {
-                            DLocalStorageSection = true;
-                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                            e.Graphics.DrawString("LOCAL-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                            breakLines.Add((int)(y / s.Height), "LOCAL-STORAGE");
-                            y += s.Height;
-                        }
-                        if (!DLinkageSection)
-                        {
-                            DLinkageSection = true;
-                            e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
-                            e.Graphics.DrawString("LINKAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
-                            breakLines.Add((int)(y / s.Height), "LINKAGE");
-                            y += s.Height;
+                            if (!DFileSection)
+                            {
+                                DFileSection = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("FILE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "FILE");
+                                y += s.Height;
+                            }
+                            if (!DWorkingStorageSection)
+                            {
+                                DWorkingStorageSection = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("WORKING-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "WORKING-STORAGE");
+                                y += s.Height;
+                            }
+                            if (!DLocalStorageSection)
+                            {
+                                DLocalStorageSection = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("LOCAL-STORAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "LOCAL-STORAGE");
+                                y += s.Height;
+                            }
+                            if (!DLinkageSection)
+                            {
+                                DLinkageSection = true;
+                                e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
+                                e.Graphics.DrawString("LINKAGE SECTION", Font, Brushes.Black, 40 + s.Height, y);
+                                breakLines.Add((int)(y / s.Height), "LINKAGE");
+                                y += s.Height;
+                            }
                         }
                         e.Graphics.DrawRectangle(Pens.Black, 42, y + 2, s.Height - 4, s.Height - 4);
                         e.Graphics.DrawString("PROCEDURE DIVISION", Font, Brushes.Black, 40 + s.Height, y);
