@@ -100,9 +100,9 @@ namespace COalBOLder
                         lines[CursorY].Text = Insert(CursorX++, ' ', lines[CursorY].Text);
                     }
                     break;
-                case Keys.Space:
-                    lines[CursorY].Text = Insert(CursorX++, ' ', lines[CursorY].Text);
-                    break;
+                //case Keys.Space:
+                    //lines[CursorY].Text = Insert(CursorX++, ' ', lines[CursorY].Text);
+                    //break;
                 case Keys.Enter:
                     lines.Insert(CursorY + 1, new Line(""));
                     CursorY++;
