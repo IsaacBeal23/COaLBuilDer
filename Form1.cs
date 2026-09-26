@@ -5,9 +5,64 @@ namespace COalBOLder
 {
     public partial class Form1 : Form
     {
-        public Form1(string location, string name, Dictionary<string, Color> cs, bool r = false)
+        public bool DarkMode { get { return darkMode; } set { darkMode = value;
+                if (darkMode)
+                {
+                    this.BackColor = Color.FromArgb(30, 30, 30);
+                    textEditor1.BackColor = Color.FromArgb(50, 50, 50);
+                    textEditor1.ForeColor = Color.White;
+                    fileDisplay1.BackColor = Color.FromArgb(50, 50, 50);
+                    fileDisplay1.ForeColor = Color.White;
+                    foreach (Control con in this.Controls)
+                    {
+                        if (con is Label l)
+                        {
+                            l.ForeColor = Color.White;
+                        }
+                        else if (con is Button tb)
+                        {
+                            tb.BackColor = Color.FromArgb(70, 70, 70);
+                            tb.ForeColor = Color.White;
+                        }
+                        else if (con is SplitContainer sc)
+                        {
+                            sc.BackColor = Color.FromArgb(30, 30, 30);
+                            sc.ForeColor = Color.White;
+                        }
+                        else
+                        {
+                            con.BackColor = Color.FromArgb(50, 50, 50);
+                            con.ForeColor = Color.White;
+                        }
+                    }
+                }
+                else
+                {
+                    this.BackColor = SystemColors.Control;
+                    foreach (Control con in this.Controls)
+                    {
+                        if (con is Label l)
+                        {
+                            l.ForeColor = SystemColors.ControlText;
+                        }
+                        else
+                        {
+                            foreach (Control con2 in con.Controls)
+                            {
+                                con2.BackColor = SystemColors.Control;
+                                con2.ForeColor = SystemColors.ControlText;
+                            }
+                            con.BackColor = SystemColors.Control;
+                            con.ForeColor = SystemColors.ControlText;
+                        }
+                    }
+                }
+            } }
+        private bool darkMode;
+        public Form1(string location, string name, Dictionary<string, Color> cs, bool DarkMode, bool r = false)
         {
             InitializeComponent();
+            this.DarkMode = DarkMode;
             this.location = location;
             Directory.CreateDirectory(this.location);
             this.name = name;

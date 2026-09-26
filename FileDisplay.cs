@@ -28,12 +28,20 @@ namespace COalBOLder
         {
             folder = new Folder(fileLoc);
         }
+        protected override void OnForeColorChanged(EventArgs e)
+        {
+            base.OnForeColorChanged(e);
+            Pen = new Pen(ForeColor);
+            text = new SolidBrush(ForeColor);
+        }
+        Pen Pen = new Pen(Color.Black);
+        Brush text = new SolidBrush(Color.Black);
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
             int X = 0 , Y = 0;
             if (folder != null)
-                folder.Draw(e.Graphics, Font,ref X,ref Y);
+                folder.Draw(e.Graphics, Font, Pen, text, ref X,ref Y);
         }
         protected override void OnMouseUp(MouseEventArgs e)
         {
@@ -91,27 +99,26 @@ namespace COalBOLder
                 Files.Add((item, Regex.Match(item, @"[^\\]+$").Value));
             }
         }
-        public void Draw(Graphics g, Font f, ref int X, ref int Y)
+        public void Draw(Graphics g, Font f, Pen pen, Brush text, ref int X, ref int Y)
         {
-            RungStart = Y / 20;
-            g.DrawString(Name, f, Brushes.Black, X + 14, Y);
+            g.DrawString(Name, f, text, X + 14, Y);
             if (Collapsed)
             {
-                g.DrawPolygon(Pens.Black, new PointF[] { new Point(X + 2, Y + 4), new Point(X + 10, Y + 9), new Point(X + 2, Y + 14) });
+                g.DrawPolygon(pen, new PointF[] { new Point(X + 2, Y + 4), new Point(X + 10, Y + 9), new Point(X + 2, Y + 14) });
                 Y += 20;
             }
             else
             {
-                g.DrawPolygon(Pens.Black, new PointF[] { new Point(X + 4, Y + 4), new Point(X + 9, Y + 12), new Point(X + 14, Y + 4) });
+                g.DrawPolygon(pen, new PointF[] { new Point(X + 4, Y + 4), new Point(X + 9, Y + 12), new Point(X + 14, Y + 4) });
                 Y += 20;
                 X += 20;
                 foreach (var item in this)
                 {
-                    item.Draw(g, f, ref X, ref Y);
+                    item.Draw(g, f, pen, text, ref X, ref Y);
                 }
                 foreach (var item in Files)
                 {
-                    g.DrawString(item.Item2, f, Brushes.Black, X, Y);
+                    g.DrawString(item.Item2, f, text, X, Y);
                     Y += 20;
                 }
                 X -= 20;

@@ -9,12 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace COalBOLder
 {
     public partial class Form2 : Form
     {
+        bool DarkMode;
         public Form2()
         {
             InitializeComponent();
@@ -23,6 +23,28 @@ namespace COalBOLder
                 XDocument xmlDoc = XDocument.Load(loc);
                 var c = xmlDoc.Root!.Element("Favourite");
                 textBox1.Text = xmlDoc.Root!.Element("Favourite")?.Value ?? "";
+                DarkMode = (xmlDoc.Root!.Element("Dark")?.Value ?? "0") == "1";
+                if (DarkMode)
+                {
+                    this.BackColor = Color.FromArgb(30, 30, 30);
+                    foreach (Control con in this.Controls)
+                    {
+                        if (con is TextBox tb)
+                        {
+                            tb.BackColor = Color.FromArgb(50, 50, 50);
+                            tb.ForeColor = Color.White;
+                        }
+                        else if (con is Button b)
+                        {
+                            b.BackColor = Color.FromArgb(70, 70, 70);
+                            b.ForeColor = Color.White;
+                        }
+                        else if (con is Label l)
+                        {
+                            l.ForeColor = Color.White;
+                        }
+                    }
+                }
                 IEnumerable<XElement> x;
                 if ((x = xmlDoc.Root!.Descendants("ColourScheme")).Count() > 0)
                 {
@@ -57,7 +79,7 @@ namespace COalBOLder
             {
                 File.WriteAllText(loc,$"<Conditions>\n\t<Favourite>{textBox1.Text}</Favourite>\n\t<ColourScheme>\n\t\t<aFF0000>\n\t\t\t<a1>#numbers</a1>\n\t\t</aFF0000>\n\t\t<a00FF00>\n\t\t\t<a1>DIVISION</a1>\n\t\t<a2>SECTION</a2>\n\t\t</a00FF00>\n\t\t<a0000FF>\n\t\t\t<a1>PIC</a1>\n\t\t</a0000FF>\n\t</ColourScheme>\n</Conditions>");
             }
-            Form1 form1 = new Form1(textBox1.Text + "\\" + textBox2.Text, textBox2.Text, colourScheme);
+            Form1 form1 = new Form1(textBox1.Text + "\\" + textBox2.Text, textBox2.Text, colourScheme, DarkMode);
             this.Hide();
             form1.ShowDialog();
             this.Close();
@@ -74,7 +96,7 @@ namespace COalBOLder
                         l = s.ReadLine();
                         n = s.ReadLine();
                     }
-                    Form1 form1 = new Form1(l, n, colourScheme, true);
+                    Form1 form1 = new Form1(l, n, colourScheme, DarkMode, true);
                     this.Hide();
                     form1.ShowDialog();
                     this.Close();
